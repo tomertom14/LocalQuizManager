@@ -16,7 +16,14 @@ export class ExamService {
     const plainExams = JSON.parse(data);
 
     return plainExams.map((examData) => {
-      const exam = new Exam(examData.title);
+      const exam = new Exam(
+        examData.title,
+        examData.description ?? '',
+        examData.category ?? '',
+        examData.accessCode ?? '',
+        examData.durationMinutes ?? 0,
+        examData.teacherId ?? '',
+      );
 
       exam.id = examData.id;
       exam.createdAt = examData.createdAt;
@@ -57,6 +64,12 @@ export class ExamService {
     const exams = this.getAllExams();
 
     return exams.find((exam) => exam.id === examId);
+  }
+
+  getExamsByTeacher(teacherId) {
+    const exams = this.getAllExams();
+
+    return exams.filter((exam) => exam.teacherId === teacherId);
   }
 
   clearAllExams() {

@@ -1,7 +1,19 @@
 export class Exam {
-  constructor(title) {
+  constructor(
+    title,
+    description = '',
+    category = '',
+    accessCode = '',
+    durationMinutes = 0,
+    teacherId = '',
+  ) {
     this.id = Date.now().toString() + Math.random().toString();
     this.title = title;
+    this.description = description;
+    this.category = category;
+    this.accessCode = accessCode;
+    this.durationMinutes = durationMinutes;
+    this.teacherId = teacherId;
     this.questions = [];
     this.createdAt = new Date().toISOString();
   }

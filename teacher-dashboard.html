@@ -7,10 +7,26 @@
     <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <div class="card dashboard-card">
-        <span class="role-badge teacher">Teacher</span>
-        <h1>Teacher Dashboard</h1>
-        <p class="subtitle">Exam management tools will appear here.</p>
+    <div class="dashboard-page">
+        <header class="dashboard-header">
+            <div class="dashboard-header-top">
+                <span class="role-badge teacher">Teacher</span>
+                <h1>Teacher Dashboard</h1>
+                <p id="welcome-message" class="subtitle"></p>
+            </div>
+
+            <div class="dashboard-actions">
+                <a href="exam-details.html" class="btn btn-primary">Create New Exam</a>
+                <button type="button" id="logout-btn" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <section class="exam-list-section">
+            <h2>My Exams</h2>
+            <div id="exam-list" class="exam-grid"></div>
+        </section>
     </div>
+
+    <script type="module" src="js/teacher-dashboard.js"></script>
 </body>
 </html>

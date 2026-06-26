@@ -251,3 +251,112 @@ body {
     color: #2980b9;
     border: 1px solid #aed6f1;
 }
+
+/* ── Teacher dashboard ── */
+.dashboard-page {
+    width: 100%;
+    max-width: 960px;
+    padding: 20px;
+}
+
+.dashboard-header {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px;
+    margin-bottom: 24px;
+}
+
+.dashboard-header-top {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.dashboard-header-top h1 {
+    font-size: 1.8rem;
+    margin-bottom: 6px;
+    color: var(--primary);
+}
+
+.dashboard-header-top .subtitle {
+    margin-bottom: 0;
+}
+
+.dashboard-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.dashboard-actions .btn-secondary {
+    margin-top: 0;
+}
+
+.exam-list-section {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px;
+}
+
+.exam-list-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
+.exam-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.exam-card {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    background: #fff;
+    transition: box-shadow 0.2s;
+}
+
+.exam-card:hover {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.exam-card-title {
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+    color: var(--primary);
+}
+
+.exam-card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.exam-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.88rem;
+}
+
+.exam-card-row dt {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.exam-card-row dd {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    padding: 24px 0;
+}
