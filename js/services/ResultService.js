@@ -20,20 +20,36 @@ export class ResultService {
         this.saveResults(results);
     }
 
+    mapResultData(resultData) {
+        return new ExamResult(
+            resultData.id,
+            resultData.studentId,
+            resultData.examId,
+            resultData.examTitle,
+            resultData.score,
+            resultData.totalQuestions,
+            resultData.completedAt,
+            resultData.userAnswers ?? [],
+        );
+    }
+
+    getResultById(resultId) {
+        const results = this.getAllResults();
+        const resultData = results.find((result) => result.id === resultId);
+
+        if (!resultData) {
+            return null;
+        }
+
+        return this.mapResultData(resultData);
+    }
+
     getResultsByStudent(studentId) {
         const results = this.getAllResults();
 
         return results
             .filter((resultData) => resultData.studentId === studentId)
-            .map((resultData) => new ExamResult(
-                resultData.id,
-                resultData.studentId,
-                resultData.examId,
-                resultData.examTitle,
-                resultData.score,
-                resultData.totalQuestions,
-                resultData.completedAt,
-            ));
+            .map((resultData) => this.mapResultData(resultData));
     }
 
     getResultsByExam(examId) {
@@ -41,14 +57,6 @@ export class ResultService {
 
         return results
             .filter((resultData) => resultData.examId === examId)
-            .map((resultData) => new ExamResult(
-                resultData.id,
-                resultData.studentId,
-                resultData.examId,
-                resultData.examTitle,
-                resultData.score,
-                resultData.totalQuestions,
-                resultData.completedAt,
-            ));
+            .map((resultData) => this.mapResultData(resultData));
     }
 }

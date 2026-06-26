@@ -131,6 +131,13 @@ function getSelectedOriginalIndex(questionIndex) {
     return Number(selectedAnswer.value);
 }
 
+function collectUserAnswers(exam, originalExam) {
+    return originalExam.questions.map((question) => {
+        const shuffledIndex = exam.questions.findIndex((q) => q.id === question.id);
+        return getSelectedOriginalIndex(shuffledIndex);
+    });
+}
+
 function calculateScore(exam) {
     let score = 0;
 
@@ -189,6 +196,8 @@ function handleSubmitExam() {
 
     const score = calculateScore(currentExam);
     const totalQuestions = currentExam.questions.length;
+    const originalExam = examService.getExamById(currentExam.id);
+    const userAnswers = collectUserAnswers(currentExam, originalExam);
 
     const examResult = new ExamResult(
         Date.now().toString(),
@@ -198,6 +207,7 @@ function handleSubmitExam() {
         score,
         totalQuestions,
         new Date().toISOString(),
+        userAnswers,
     );
 
     resultService.saveResult(examResult);

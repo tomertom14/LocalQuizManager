@@ -1,5 +1,5 @@
 export class ExamResult {
-    constructor(id, studentId, examId, examTitle, score, totalQuestions, completedAt) {
+    constructor(id, studentId, examId, examTitle, score, totalQuestions, completedAt, userAnswers = []) {
         this.id = id;
         this.studentId = studentId;
         this.examId = examId;
@@ -7,6 +7,7 @@ export class ExamResult {
         this.score = score;
         this.totalQuestions = totalQuestions;
         this.completedAt = completedAt;
+        this.userAnswers = userAnswers;
     }
 
     getPercentage() {

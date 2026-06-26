@@ -70,10 +70,18 @@ function renderResultsTable(results) {
         const percentageCell = document.createElement('td');
         percentageCell.textContent = `${result.getPercentage()}%`;
 
+        const actionsCell = document.createElement('td');
+        const reviewLink = document.createElement('a');
+        reviewLink.href = `view-result.html?resultId=${result.id}`;
+        reviewLink.className = 'btn btn-small btn-secondary';
+        reviewLink.textContent = 'Review Exam';
+        actionsCell.appendChild(reviewLink);
+
         row.appendChild(titleCell);
         row.appendChild(dateCell);
         row.appendChild(scoreCell);
         row.appendChild(percentageCell);
+        row.appendChild(actionsCell);
 
         tbody.appendChild(row);
     });
