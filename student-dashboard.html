@@ -7,10 +7,46 @@
     <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <div class="card dashboard-card">
-        <span class="role-badge student">Student</span>
-        <h1>Student Dashboard</h1>
-        <p class="subtitle">Your exams and results will appear here.</p>
+    <div class="dashboard-page">
+        <header class="dashboard-header">
+            <div class="dashboard-header-top">
+                <span class="role-badge student">Student</span>
+                <h1>Student Dashboard</h1>
+                <p id="welcome-message" class="subtitle"></p>
+            </div>
+
+            <div class="dashboard-actions">
+                <a href="search-exam.html" class="btn btn-primary">Search for Exam</a>
+                <button type="button" id="logout-btn" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <section class="stats-section">
+            <div class="stat-card">
+                <span class="stat-label">Average Score</span>
+                <span id="average-score" class="stat-value">—</span>
+            </div>
+        </section>
+
+        <section class="exam-list-section">
+            <h2>Exam History</h2>
+            <div class="results-table-wrapper">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Score</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body"></tbody>
+                </table>
+            </div>
+            <p id="results-empty" class="empty-state" hidden>No exams taken yet.</p>
+        </section>
     </div>
+
+    <script type="module" src="js/student-dashboard.js"></script>
 </body>
 </html>

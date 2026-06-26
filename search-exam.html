@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Exam – Exam Management System</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+    <div class="dashboard-page">
+        <header class="dashboard-header">
+            <div class="dashboard-header-top">
+                <span class="role-badge student">Student</span>
+                <h1>Search for Exam</h1>
+                <p class="subtitle">Search by exam title or access code.</p>
+            </div>
+        </header>
+
+        <section class="search-section">
+            <form id="search-form" class="search-form" novalidate>
+                <div class="form-group">
+                    <label for="search-query">Search</label>
+                    <input
+                        type="text"
+                        id="search-query"
+                        placeholder="Enter title or access code…"
+                        required
+                    />
+                </div>
+                <button type="submit" class="btn btn-primary btn-inline">Search</button>
+            </form>
+        </section>
+
+        <section class="exam-list-section">
+            <h2>Search Results</h2>
+            <div id="search-results" class="exam-grid"></div>
+            <p id="search-empty" class="empty-state" hidden>No exams found. Try a different search.</p>
+        </section>
+
+        <div class="back-link">
+            <a href="student-dashboard.html">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script type="module" src="js/search-exam.js"></script>
+</body>
+</html>
