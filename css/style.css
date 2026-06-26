@@ -147,6 +147,10 @@ body {
     display: block;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 /* ── Landing page specific ── */
 .landing-card {
     max-width: 520px;
@@ -773,8 +777,15 @@ body:has(.take-exam-page) {
 }
 
 .take-exam-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     max-width: 320px;
     margin: 0 auto;
+}
+
+.take-exam-actions .btn-primary {
+    margin-top: 0;
 }
 
 .results-panel {
@@ -803,6 +814,62 @@ body:has(.take-exam-page) {
     font-weight: 700;
     color: var(--accent);
     margin-bottom: 24px;
+}
+
+.results-summary {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 32px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.results-summary h2 {
+    font-size: 1.4rem;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.results-summary .result-percentage {
+    margin-bottom: 12px;
+}
+
+.review-hint {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+.answer-option.answer-correct {
+    background-color: #eafaf1;
+    border-color: var(--success);
+    color: #1e8449;
+    font-weight: 600;
+}
+
+.answer-option.answer-incorrect {
+    background-color: #fdedec;
+    border-color: var(--danger);
+    color: #c0392b;
+    font-weight: 600;
+}
+
+body.dark-mode .answer-option.answer-correct {
+    background-color: #1a3328;
+    border-color: var(--success);
+    color: #2ecc71;
+}
+
+body.dark-mode .answer-option.answer-incorrect {
+    background-color: #3a1f1f;
+    border-color: var(--danger);
+    color: #e74c3c;
+}
+
+.answer-option.answer-correct input[type="radio"],
+.answer-option.answer-incorrect input[type="radio"] {
+    pointer-events: none;
 }
 
 /* ── Theme toggle ── */

@@ -17,9 +17,24 @@ function redirectToSearch() {
     window.location.href = 'search-exam.html';
 }
 
+function showExamError(message) {
+    const errorEl = document.getElementById('error-message');
+    errorEl.textContent = message;
+    errorEl.className = 'message error';
+    errorEl.hidden = false;
+}
+
+function hideExamError() {
+    const errorEl = document.getElementById('error-message');
+    errorEl.textContent = '';
+    errorEl.className = 'message';
+    errorEl.hidden = true;
+}
+
 function showErrorAndRedirect(message) {
     const errorEl = document.getElementById('error-message');
     errorEl.textContent = message;
+    errorEl.className = 'message error';
     errorEl.hidden = false;
 
     document.getElementById('exam-container').hidden = true;
@@ -34,8 +49,8 @@ function getExamIdFromUrl() {
     return params.get('id');
 }
 
-function shuffleQuestions(questions) {
-    const shuffled = [...questions];
+function shuffleArray(items) {
+    const shuffled = [...items];
 
     for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -45,9 +60,19 @@ function shuffleQuestions(questions) {
     return shuffled;
 }
 
+function shuffleQuestions(questions) {
+    return shuffleArray(questions);
+}
+
+function shuffleAnswers(answers) {
+    const entries = answers.map((text, originalIndex) => ({ text, originalIndex }));
+    return shuffleArray(entries);
+}
+
 function renderQuestion(question, questionIndex) {
     const questionBlock = document.createElement('article');
     questionBlock.className = 'question-block';
+    questionBlock.dataset.questionIndex = String(questionIndex);
 
     const questionText = document.createElement('h3');
     questionText.className = 'question-block-title';
@@ -56,17 +81,20 @@ function renderQuestion(question, questionIndex) {
     const answersList = document.createElement('div');
     answersList.className = 'answers-list';
 
-    question.answers.forEach((answer, answerIndex) => {
+    const shuffledAnswers = shuffleAnswers(question.answers);
+
+    shuffledAnswers.forEach(({ text, originalIndex }) => {
         const label = document.createElement('label');
         label.className = 'answer-option';
+        label.dataset.originalIndex = String(originalIndex);
 
         const radio = document.createElement('input');
         radio.type = 'radio';
         radio.name = `question-${questionIndex}`;
-        radio.value = answerIndex.toString();
+        radio.value = String(originalIndex);
 
         const answerText = document.createElement('span');
-        answerText.textContent = answer;
+        answerText.textContent = text;
 
         label.appendChild(radio);
         label.appendChild(answerText);
@@ -91,19 +119,27 @@ function renderExam(exam) {
     });
 }
 
+function getSelectedOriginalIndex(questionIndex) {
+    const selectedAnswer = document.querySelector(
+        `input[name="question-${questionIndex}"]:checked`,
+    );
+
+    if (!selectedAnswer) {
+        return null;
+    }
+
+    return Number(selectedAnswer.value);
+}
+
 function calculateScore(exam) {
     let score = 0;
 
     exam.questions.forEach((question, questionIndex) => {
-        const selectedAnswer = document.querySelector(
-            `input[name="question-${questionIndex}"]:checked`,
-        );
+        const userAnswerIndex = getSelectedOriginalIndex(questionIndex);
 
-        if (!selectedAnswer) {
+        if (userAnswerIndex === null) {
             return;
         }
-
-        const userAnswerIndex = Number(selectedAnswer.value);
 
         if (question.isCorrect(userAnswerIndex)) {
             score++;
@@ -113,22 +149,43 @@ function calculateScore(exam) {
     return score;
 }
 
+function showAnswerReview(exam) {
+    exam.questions.forEach((question, questionIndex) => {
+        const userAnswerIndex = getSelectedOriginalIndex(questionIndex);
+        const correctIndex = question.correctAnswerIndex;
+
+        const radios = document.querySelectorAll(`input[name="question-${questionIndex}"]`);
+
+        radios.forEach((radio) => {
+            radio.disabled = true;
+
+            const label = radio.closest('.answer-option');
+            const originalIndex = Number(radio.value);
+            const isUserSelection = originalIndex === userAnswerIndex;
+            const isCorrectAnswer = originalIndex === correctIndex;
+
+            if (isUserSelection && isCorrectAnswer) {
+                label.classList.add('answer-correct');
+            } else if (isUserSelection && !isCorrectAnswer) {
+                label.classList.add('answer-incorrect');
+            } else if (isCorrectAnswer) {
+                label.classList.add('answer-correct');
+            }
+        });
+    });
+}
+
 function handleSubmitExam() {
     const unansweredCount = currentExam.questions.filter((_, questionIndex) => {
-        const selectedAnswer = document.querySelector(
-            `input[name="question-${questionIndex}"]:checked`,
-        );
-        return !selectedAnswer;
+        return getSelectedOriginalIndex(questionIndex) === null;
     }).length;
 
     if (unansweredCount > 0) {
-        const errorEl = document.getElementById('error-message');
-        errorEl.textContent = 'Please answer all questions before submitting.';
-        errorEl.hidden = false;
+        showExamError('Please answer all questions before submitting.');
         return;
     }
 
-    document.getElementById('error-message').hidden = true;
+    hideExamError();
 
     const score = calculateScore(currentExam);
     const totalQuestions = currentExam.questions.length;
@@ -145,13 +202,16 @@ function handleSubmitExam() {
 
     resultService.saveResult(examResult);
 
-    document.getElementById('exam-container').hidden = true;
-
-    const resultsContainer = document.getElementById('results-container');
     document.getElementById('final-score').textContent = `Score: ${score} / ${totalQuestions}`;
     document.getElementById('final-percentage').textContent = `Percentage: ${examResult.getPercentage()}%`;
+    document.getElementById('results-summary').hidden = false;
 
-    resultsContainer.hidden = false;
+    showAnswerReview(currentExam);
+
+    document.getElementById('submit-exam-btn').hidden = true;
+    document.getElementById('return-dashboard-btn').hidden = false;
+
+    document.getElementById('results-summary').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function init() {

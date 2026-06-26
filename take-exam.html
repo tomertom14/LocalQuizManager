@@ -12,7 +12,7 @@
     </div>
 
     <div class="take-exam-page">
-        <div id="error-message" class="message error" role="alert" hidden></div>
+        <div id="error-message" class="message" role="alert" hidden></div>
 
         <div id="exam-container">
             <header class="take-exam-header">
@@ -21,20 +21,21 @@
                 <p id="exam-description" class="subtitle"></p>
             </header>
 
+            <div id="results-summary" class="results-summary" hidden>
+                <h2>Exam Complete</h2>
+                <p id="final-score" class="result-score"></p>
+                <p id="final-percentage" class="result-percentage"></p>
+                <p class="review-hint">Review your answers below. Green indicates correct, red indicates your incorrect choice.</p>
+            </div>
+
             <section class="take-exam-questions">
                 <div id="questions-container"></div>
             </section>
 
             <div class="take-exam-actions">
                 <button type="button" id="submit-exam-btn" class="btn btn-primary">Submit Exam</button>
+                <a id="return-dashboard-btn" href="student-dashboard.html" class="btn btn-primary" hidden>Return to Dashboard</a>
             </div>
-        </div>
-
-        <div id="results-container" class="results-panel" hidden>
-            <h2>Exam Complete</h2>
-            <p id="final-score" class="result-score"></p>
-            <p id="final-percentage" class="result-percentage"></p>
-            <a href="student-dashboard.html" class="btn btn-primary">Return to Dashboard</a>
         </div>
     </div>
 
