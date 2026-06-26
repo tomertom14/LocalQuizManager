@@ -360,3 +360,140 @@ body {
     font-size: 0.95rem;
     padding: 24px 0;
 }
+
+/* ── Exam details page ── */
+body:has(.exam-details-page) {
+    justify-content: flex-start;
+    padding-top: 32px;
+    padding-bottom: 40px;
+}
+
+.exam-details-page {
+    width: 100%;
+    max-width: 720px;
+    padding: 0 20px;
+}
+
+.exam-details-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.exam-details-header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 6px;
+    color: var(--primary);
+}
+
+.exam-details-header .subtitle {
+    margin-bottom: 0;
+}
+
+.form-section {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 32px;
+    margin-bottom: 20px;
+}
+
+.form-section h2 {
+    font-size: 1.1rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid var(--border);
+}
+
+.form-section .form-group {
+    margin-bottom: 16px;
+}
+
+.form-section textarea {
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--text);
+    background: #fff;
+    resize: vertical;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-section textarea:focus {
+    border-color: var(--accent);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-group-narrow {
+    max-width: 220px;
+}
+
+.btn-inline {
+    width: auto;
+    margin-top: 4px;
+}
+
+.questions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.question-draft-item {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    background: var(--bg);
+}
+
+.question-number {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--accent);
+    margin-bottom: 6px;
+}
+
+.question-draft-text {
+    font-size: 0.95rem;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.question-draft-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.form-actions .btn-secondary {
+    margin-top: 0;
+}
+
+@media (max-width: 560px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group-narrow {
+        max-width: 100%;
+    }
+}
