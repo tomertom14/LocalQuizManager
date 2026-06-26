@@ -46,24 +46,15 @@ export class ExamService {
 
   saveExam(exam) {
     const exams = this.getAllExams();
+    const existingIndex = exams.findIndex((existingExam) => existingExam.id === exam.id);
 
-    exams.push(exam);
-
-    localStorage.setItem(this.storageKey, JSON.stringify(exams));
-  }
-
-  updateExam(updatedExam) {
-    const exams = this.getAllExams();
-    const examIndex = exams.findIndex((exam) => exam.id === updatedExam.id);
-
-    if (examIndex === -1) {
-      return false;
+    if (existingIndex !== -1) {
+      exams[existingIndex] = exam;
+    } else {
+      exams.push(exam);
     }
 
-    exams[examIndex] = updatedExam;
     localStorage.setItem(this.storageKey, JSON.stringify(exams));
-
-    return true;
   }
 
   deleteExam(examId) {

@@ -105,6 +105,24 @@
             <div id="questions-list" class="questions-list"></div>
         </section>
 
+        <section id="student-results-section" class="form-section" hidden>
+            <h2>Student Results</h2>
+            <div class="results-table-wrapper">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Student Name / ID</th>
+                            <th>Score</th>
+                            <th>Percentage</th>
+                            <th>Date Completed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-results-body"></tbody>
+                </table>
+            </div>
+            <p id="student-results-empty" class="empty-state" hidden>No students have taken this exam yet.</p>
+        </section>
+
         <div class="form-actions">
             <button type="button" id="save-exam-btn" class="btn btn-primary">Save Exam</button>
             <a href="teacher-dashboard.html" class="btn btn-secondary">Cancel</a>

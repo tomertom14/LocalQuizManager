@@ -362,6 +362,16 @@ body {
     text-decoration: none;
 }
 
+.exam-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.exam-card-actions .btn-small {
+    flex: 1;
+}
+
 .empty-state {
     text-align: center;
     color: var(--text-muted);

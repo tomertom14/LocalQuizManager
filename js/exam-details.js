@@ -1,9 +1,11 @@
 import { AuthService } from './services/AuthService.js';
 import { ExamService } from './services/ExamService.js';
+import { ResultService } from './services/ResultService.js';
 import { Exam } from './models/Exam.js';
 import { Question } from './models/Question.js';
 
 const examService = new ExamService();
+const resultService = new ResultService();
 const draftQuestions = [];
 let currentUser = null;
 let editingIndex = null;
@@ -247,6 +249,72 @@ function getExamIdFromUrl() {
     return params.get('id');
 }
 
+function formatDate(isoString) {
+    const date = new Date(isoString);
+    return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+}
+
+function getStudentDisplayName(studentId) {
+    const users = AuthService.getUsers();
+    const student = users.find((user) => user.id === studentId);
+
+    if (!student) {
+        return `Unknown Student (${studentId})`;
+    }
+
+    return `${student.name} (${student.idNumber})`;
+}
+
+function renderStudentResults(examId) {
+    const section = document.getElementById('student-results-section');
+    const tbody = document.getElementById('student-results-body');
+    const emptyEl = document.getElementById('student-results-empty');
+    const tableWrapper = section.querySelector('.results-table-wrapper');
+
+    section.hidden = false;
+
+    const results = resultService.getResultsByExam(examId);
+    tbody.innerHTML = '';
+
+    if (results.length === 0) {
+        tableWrapper.hidden = true;
+        emptyEl.hidden = false;
+        return;
+    }
+
+    tableWrapper.hidden = false;
+    emptyEl.hidden = true;
+
+    results.forEach((result) => {
+        const row = document.createElement('tr');
+
+        const studentCell = document.createElement('td');
+        studentCell.textContent = getStudentDisplayName(result.studentId);
+
+        const scoreCell = document.createElement('td');
+        scoreCell.textContent = `${result.score}/${result.totalQuestions}`;
+
+        const percentageCell = document.createElement('td');
+        percentageCell.textContent = `${result.getPercentage()}%`;
+
+        const dateCell = document.createElement('td');
+        dateCell.textContent = formatDate(result.completedAt);
+
+        row.appendChild(studentCell);
+        row.appendChild(scoreCell);
+        row.appendChild(percentageCell);
+        row.appendChild(dateCell);
+
+        tbody.appendChild(row);
+    });
+}
+
 function loadExamForEditing(examId) {
     const exam = examService.getExamById(examId);
 
@@ -279,6 +347,7 @@ function loadExamForEditing(examId) {
     }));
 
     renderQuestionsList();
+    renderStudentResults(exam.id);
 }
 
 function handleSaveExam() {
@@ -303,19 +372,15 @@ function handleSaveExam() {
     if (editingExamId) {
         exam.id = editingExamId;
         exam.createdAt = editingExamCreatedAt;
-
-        const updated = examService.updateExam(exam);
-
-        if (!updated) {
-            showMessage('Failed to update exam. Please try again.', 'error');
-            return;
-        }
-
-        showMessage('Exam updated successfully! Redirecting to dashboard…', 'success');
-    } else {
-        examService.saveExam(exam);
-        showMessage('Exam saved successfully! Redirecting to dashboard…', 'success');
     }
+
+    examService.saveExam(exam);
+
+    const successMessage = editingExamId
+        ? 'Exam updated successfully! Redirecting to dashboard…'
+        : 'Exam saved successfully! Redirecting to dashboard…';
+
+    showMessage(successMessage, 'success');
 
     setTimeout(() => {
         window.location.href = 'teacher-dashboard.html';

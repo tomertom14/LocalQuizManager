@@ -35,4 +35,20 @@ export class ResultService {
                 resultData.completedAt,
             ));
     }
+
+    getResultsByExam(examId) {
+        const results = this.getAllResults();
+
+        return results
+            .filter((resultData) => resultData.examId === examId)
+            .map((resultData) => new ExamResult(
+                resultData.id,
+                resultData.studentId,
+                resultData.examId,
+                resultData.examTitle,
+                resultData.score,
+                resultData.totalQuestions,
+                resultData.completedAt,
+            ));
+    }
 }
