@@ -34,6 +34,17 @@ function getExamIdFromUrl() {
     return params.get('id');
 }
 
+function shuffleQuestions(questions) {
+    const shuffled = [...questions];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+}
+
 function renderQuestion(question, questionIndex) {
     const questionBlock = document.createElement('article');
     questionBlock.className = 'question-block';
@@ -169,6 +180,8 @@ function init() {
         showErrorAndRedirect('This exam has no questions. Redirecting to search…');
         return;
     }
+
+    currentExam.questions = shuffleQuestions(currentExam.questions);
 
     renderExam(currentExam);
 

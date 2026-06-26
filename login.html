@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+    <div class="theme-toggle-wrapper">
+        <button type="button" id="theme-toggle-btn" class="btn btn-theme-toggle">Toggle Dark Mode</button>
+    </div>
+
     <div class="card">
         <h1>Welcome Back</h1>
         <p class="subtitle">Enter your credentials to continue.</p>
@@ -32,6 +36,12 @@
         </p>
     </div>
 
+    <script type="module">
+        import { initTheme, toggleTheme } from './js/theme.js';
+
+        initTheme();
+        document.getElementById('theme-toggle-btn').addEventListener('click', toggleTheme);
+    </script>
     <script type="module" src="js/login.js"></script>
 </body>
 </html>

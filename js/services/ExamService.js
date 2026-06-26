@@ -52,6 +52,20 @@ export class ExamService {
     localStorage.setItem(this.storageKey, JSON.stringify(exams));
   }
 
+  updateExam(updatedExam) {
+    const exams = this.getAllExams();
+    const examIndex = exams.findIndex((exam) => exam.id === updatedExam.id);
+
+    if (examIndex === -1) {
+      return false;
+    }
+
+    exams[examIndex] = updatedExam;
+    localStorage.setItem(this.storageKey, JSON.stringify(exams));
+
+    return true;
+  }
+
   deleteExam(examId) {
     const exams = this.getAllExams();
 

@@ -7,6 +7,8 @@ const examService = new ExamService();
 const draftQuestions = [];
 let currentUser = null;
 let editingIndex = null;
+let editingExamId = null;
+let editingExamCreatedAt = null;
 
 const messageEl = document.getElementById('message');
 const addQuestionBtn = document.getElementById('add-question-btn');
@@ -240,6 +242,45 @@ function validateExamInfo() {
     return { title, description, category, accessCode, durationMinutes };
 }
 
+function getExamIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id');
+}
+
+function loadExamForEditing(examId) {
+    const exam = examService.getExamById(examId);
+
+    if (!exam || exam.teacherId !== currentUser.id) {
+        showMessage('Exam not found or you do not have permission to edit it.', 'error');
+        setTimeout(() => {
+            window.location.href = 'teacher-dashboard.html';
+        }, 1500);
+        return;
+    }
+
+    editingExamId = exam.id;
+    editingExamCreatedAt = exam.createdAt;
+
+    document.getElementById('page-title').textContent = 'Edit Exam';
+    document.getElementById('page-subtitle').textContent = 'Update exam details and questions.';
+    document.title = 'Edit Exam – Exam Management System';
+    document.getElementById('save-exam-btn').textContent = 'Update Exam';
+
+    document.getElementById('title').value = exam.title;
+    document.getElementById('description').value = exam.description;
+    document.getElementById('category').value = exam.category;
+    document.getElementById('accessCode').value = exam.accessCode;
+    document.getElementById('durationMinutes').value = exam.durationMinutes;
+
+    draftQuestions.push(...exam.questions.map((question) => {
+        const copy = new Question(question.text, [...question.answers], question.correctAnswerIndex);
+        copy.id = question.id;
+        return copy;
+    }));
+
+    renderQuestionsList();
+}
+
 function handleSaveExam() {
     clearMessage();
 
@@ -259,9 +300,22 @@ function handleSaveExam() {
 
     exam.questions = [...draftQuestions];
 
-    examService.saveExam(exam);
+    if (editingExamId) {
+        exam.id = editingExamId;
+        exam.createdAt = editingExamCreatedAt;
 
-    showMessage('Exam saved successfully! Redirecting to dashboard…', 'success');
+        const updated = examService.updateExam(exam);
+
+        if (!updated) {
+            showMessage('Failed to update exam. Please try again.', 'error');
+            return;
+        }
+
+        showMessage('Exam updated successfully! Redirecting to dashboard…', 'success');
+    } else {
+        examService.saveExam(exam);
+        showMessage('Exam saved successfully! Redirecting to dashboard…', 'success');
+    }
 
     setTimeout(() => {
         window.location.href = 'teacher-dashboard.html';
@@ -277,6 +331,11 @@ function init() {
     }
 
     renderQuestionsList();
+
+    const examId = getExamIdFromUrl();
+    if (examId) {
+        loadExamForEditing(examId);
+    }
 
     addQuestionBtn.addEventListener('click', handleAddQuestion);
     cancelEditBtn.addEventListener('click', handleCancelEdit);
