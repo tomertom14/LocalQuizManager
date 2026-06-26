@@ -7,10 +7,33 @@
     <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <div class="card dashboard-card">
-        <span class="role-badge student">Student</span>
-        <h1>Take Exam</h1>
-        <p class="subtitle">Exam taking interface will appear here.</p>
+    <div class="take-exam-page">
+        <div id="error-message" class="message error" role="alert" hidden></div>
+
+        <div id="exam-container">
+            <header class="take-exam-header">
+                <span class="role-badge student">Student</span>
+                <h1 id="exam-title"></h1>
+                <p id="exam-description" class="subtitle"></p>
+            </header>
+
+            <section class="take-exam-questions">
+                <div id="questions-container"></div>
+            </section>
+
+            <div class="take-exam-actions">
+                <button type="button" id="submit-exam-btn" class="btn btn-primary">Submit Exam</button>
+            </div>
+        </div>
+
+        <div id="results-container" class="results-panel" hidden>
+            <h2>Exam Complete</h2>
+            <p id="final-score" class="result-score"></p>
+            <p id="final-percentage" class="result-percentage"></p>
+            <a href="student-dashboard.html" class="btn btn-primary">Return to Dashboard</a>
+        </div>
     </div>
+
+    <script type="module" src="js/take-exam.js"></script>
 </body>
 </html>

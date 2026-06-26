@@ -6,8 +6,11 @@ import { Question } from './models/Question.js';
 const examService = new ExamService();
 const draftQuestions = [];
 let currentUser = null;
+let editingIndex = null;
 
 const messageEl = document.getElementById('message');
+const addQuestionBtn = document.getElementById('add-question-btn');
+const cancelEditBtn = document.getElementById('cancel-edit-btn');
 
 function redirectToLogin() {
     window.location.href = 'login.html';
@@ -32,13 +35,62 @@ function clearQuestionInputs() {
     document.getElementById('correctAnswer').value = '';
 }
 
+function populateQuestionForm(question) {
+    document.getElementById('questionText').value = question.text;
+    document.getElementById('answer1').value = question.answers[0];
+    document.getElementById('answer2').value = question.answers[1];
+    document.getElementById('answer3').value = question.answers[2];
+    document.getElementById('answer4').value = question.answers[3];
+    document.getElementById('correctAnswer').value = String(question.correctAnswerIndex + 1);
+}
+
+function setEditMode(index) {
+    editingIndex = index;
+    addQuestionBtn.textContent = 'Update Question';
+    cancelEditBtn.hidden = false;
+}
+
+function clearEditMode() {
+    editingIndex = null;
+    addQuestionBtn.textContent = 'Add Question';
+    cancelEditBtn.hidden = true;
+    clearQuestionInputs();
+}
+
 function createQuestionDraftItem(question, index) {
     const item = document.createElement('article');
     item.className = 'question-draft-item';
 
+    if (editingIndex === index) {
+        item.classList.add('question-draft-item-editing');
+    }
+
+    const header = document.createElement('div');
+    header.className = 'question-draft-header';
+
     const number = document.createElement('span');
     number.className = 'question-number';
     number.textContent = `Question ${index + 1}`;
+
+    const actions = document.createElement('div');
+    actions.className = 'question-draft-actions';
+
+    const editBtn = document.createElement('button');
+    editBtn.type = 'button';
+    editBtn.className = 'btn btn-small btn-edit';
+    editBtn.textContent = 'Edit';
+    editBtn.addEventListener('click', () => handleEditQuestion(index));
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.type = 'button';
+    deleteBtn.className = 'btn btn-small btn-delete';
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.addEventListener('click', () => handleDeleteQuestion(index));
+
+    actions.appendChild(editBtn);
+    actions.appendChild(deleteBtn);
+    header.appendChild(number);
+    header.appendChild(actions);
 
     const text = document.createElement('p');
     text.className = 'question-draft-text';
@@ -48,7 +100,7 @@ function createQuestionDraftItem(question, index) {
     meta.className = 'question-draft-meta';
     meta.textContent = `Correct answer: ${question.correctAnswerIndex + 1}`;
 
-    item.appendChild(number);
+    item.appendChild(header);
     item.appendChild(text);
     item.appendChild(meta);
 
@@ -115,11 +167,52 @@ function handleAddQuestion() {
         validated.correctAnswerIndex,
     );
 
+    if (editingIndex !== null) {
+        draftQuestions[editingIndex] = question;
+        clearEditMode();
+        renderQuestionsList();
+        showMessage('Question updated.', 'success');
+        return;
+    }
+
     draftQuestions.push(question);
     clearQuestionInputs();
     renderQuestionsList();
-
     showMessage(`Question added. Total: ${draftQuestions.length}.`, 'success');
+}
+
+function handleEditQuestion(index) {
+    clearMessage();
+
+    const question = draftQuestions[index];
+    populateQuestionForm(question);
+    setEditMode(index);
+    renderQuestionsList();
+
+    document.getElementById('questionText').focus();
+    document.querySelector('.form-section:nth-of-type(2)').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showMessage(`Editing Question ${index + 1}. Update the fields and click Update Question.`, 'success');
+}
+
+function handleDeleteQuestion(index) {
+    clearMessage();
+
+    if (editingIndex === index) {
+        clearEditMode();
+    } else if (editingIndex !== null && editingIndex > index) {
+        editingIndex -= 1;
+    }
+
+    draftQuestions.splice(index, 1);
+    renderQuestionsList();
+    showMessage('Question removed.', 'success');
+}
+
+function handleCancelEdit() {
+    clearMessage();
+    clearEditMode();
+    renderQuestionsList();
+    showMessage('Edit cancelled.', 'success');
 }
 
 function validateExamInfo() {
@@ -185,7 +278,8 @@ function init() {
 
     renderQuestionsList();
 
-    document.getElementById('add-question-btn').addEventListener('click', handleAddQuestion);
+    addQuestionBtn.addEventListener('click', handleAddQuestion);
+    cancelEditBtn.addEventListener('click', handleCancelEdit);
     document.getElementById('save-exam-btn').addEventListener('click', handleSaveExam);
 }
 

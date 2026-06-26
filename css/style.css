@@ -455,6 +455,61 @@ body:has(.exam-details-page) {
     background: var(--bg);
 }
 
+.question-draft-item-editing {
+    border-color: var(--accent);
+    background: #ebf5fb;
+}
+
+.question-draft-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.question-draft-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-small {
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    width: auto;
+}
+
+.btn-edit {
+    background-color: transparent;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+}
+
+.btn-edit:hover {
+    background-color: #ebf5fb;
+}
+
+.btn-delete {
+    background-color: transparent;
+    color: var(--danger);
+    border: 1.5px solid var(--danger);
+}
+
+.btn-delete:hover {
+    background-color: #fdedec;
+}
+
+.question-builder-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.question-builder-actions .btn-secondary {
+    margin-top: 0;
+}
+
 .question-number {
     display: inline-block;
     font-size: 0.78rem;
@@ -610,4 +665,124 @@ body:has(.exam-details-page) {
 
 .back-link a:hover {
     text-decoration: underline;
+}
+
+/* ── Take exam page ── */
+body:has(.take-exam-page) {
+    justify-content: flex-start;
+    padding-top: 32px;
+    padding-bottom: 40px;
+}
+
+.take-exam-page {
+    width: 100%;
+    max-width: 720px;
+    padding: 0 20px;
+}
+
+.take-exam-header {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 32px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.take-exam-header h1 {
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+    color: var(--primary);
+}
+
+.take-exam-header .subtitle {
+    margin-bottom: 0;
+}
+
+.take-exam-questions {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 32px;
+    margin-bottom: 20px;
+}
+
+.question-block {
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    border-bottom: 1.5px solid var(--border);
+}
+
+.question-block:last-child {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.question-block-title {
+    font-size: 1rem;
+    color: var(--primary);
+    margin-bottom: 14px;
+}
+
+.answers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.answer-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.answer-option:hover {
+    background: var(--bg);
+}
+
+.answer-option input[type="radio"] {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.take-exam-actions {
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.results-panel {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 40px 32px;
+    text-align: center;
+}
+
+.results-panel h2 {
+    font-size: 1.4rem;
+    color: var(--primary);
+    margin-bottom: 16px;
+}
+
+.result-score {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.result-percentage {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 24px;
 }
