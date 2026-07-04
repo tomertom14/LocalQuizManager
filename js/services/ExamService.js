@@ -24,6 +24,7 @@ export class ExamService {
         examData.accessCode ?? '',
         examData.durationMinutes ?? 0,
         examData.teacherId ?? '',
+        examData.maxAttempts ?? 1,
       );
 
       // Restore persisted identity fields (constructor generates new ones by default).

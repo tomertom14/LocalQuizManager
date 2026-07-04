@@ -44,6 +44,16 @@ function showErrorAndRedirect(message) {
     }, 2000);
 }
 
+function showAttemptsBlockedMessage() {
+    const errorEl = document.getElementById('error-message');
+    errorEl.textContent = 'You have used all attempts for this exam.';
+    errorEl.className = 'message error';
+    errorEl.hidden = false;
+
+    document.getElementById('exam-container').hidden = true;
+    document.getElementById('back-to-search-btn').hidden = false;
+}
+
 function getExamIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return params.get('id');
@@ -252,6 +262,16 @@ function init() {
 
     if (currentExam.questions.length === 0) {
         showErrorAndRedirect('This exam has no questions. Redirecting to search…');
+        return;
+    }
+
+    const attemptCount = resultService
+        .getResultsByStudent(currentUser.id)
+        .filter((result) => result.examId === examId)
+        .length;
+
+    if (attemptCount >= currentExam.maxAttempts) {
+        showAttemptsBlockedMessage();
         return;
     }
 

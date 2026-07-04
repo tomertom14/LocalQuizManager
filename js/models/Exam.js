@@ -6,6 +6,7 @@ export class Exam {
     accessCode = '',
     durationMinutes = 0,
     teacherId = '',
+    maxAttempts = 1,
   ) {
     this.id = Date.now().toString() + Math.random().toString();
     this.title = title;
@@ -14,6 +15,7 @@ export class Exam {
     this.accessCode = accessCode;
     this.durationMinutes = durationMinutes;
     this.teacherId = teacherId;
+    this.maxAttempts = maxAttempts;
     this.questions = [];
     this.createdAt = new Date().toISOString();
   }

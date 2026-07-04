@@ -225,6 +225,7 @@ function validateExamInfo() {
     const category = document.getElementById('category').value.trim();
     const accessCode = document.getElementById('accessCode').value.trim();
     const durationMinutes = Number(document.getElementById('durationMinutes').value);
+    const maxAttempts = Number(document.getElementById('maxAttempts').value);
 
     if (!title || !description || !category || !accessCode) {
         showMessage('Please fill in all exam information fields.', 'error');
@@ -236,12 +237,17 @@ function validateExamInfo() {
         return null;
     }
 
+    if (!Number.isInteger(maxAttempts) || maxAttempts < 1) {
+        showMessage('Please enter a valid max attempts value (at least 1).', 'error');
+        return null;
+    }
+
     if (draftQuestions.length === 0) {
         showMessage('Please add at least one question before saving.', 'error');
         return null;
     }
 
-    return { title, description, category, accessCode, durationMinutes };
+    return { title, description, category, accessCode, durationMinutes, maxAttempts };
 }
 
 function getExamIdFromUrl() {
@@ -339,6 +345,7 @@ function loadExamForEditing(examId) {
     document.getElementById('category').value = exam.category;
     document.getElementById('accessCode').value = exam.accessCode;
     document.getElementById('durationMinutes').value = exam.durationMinutes;
+    document.getElementById('maxAttempts').value = exam.maxAttempts;
 
     draftQuestions.push(...exam.questions.map((question) => {
         const copy = new Question(question.text, [...question.answers], question.correctAnswerIndex);
@@ -365,6 +372,7 @@ function handleSaveExam() {
         examInfo.accessCode,
         examInfo.durationMinutes,
         currentUser.id,
+        examInfo.maxAttempts,
     );
 
     exam.questions = [...draftQuestions];
