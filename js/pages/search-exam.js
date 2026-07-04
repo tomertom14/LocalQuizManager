@@ -1,5 +1,5 @@
-import { AuthService } from './services/AuthService.js';
-import { ExamService } from './services/ExamService.js';
+import { AuthService } from '../services/AuthService.js';
+import { ExamService } from '../services/ExamService.js';
 
 const examService = new ExamService();
 

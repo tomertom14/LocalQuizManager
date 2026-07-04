@@ -1,5 +1,5 @@
-import { AuthService } from './services/AuthService.js';
-import { ResultService } from './services/ResultService.js';
+import { AuthService } from '../services/AuthService.js';
+import { ResultService } from '../services/ResultService.js';
 
 const resultService = new ResultService();
 
@@ -104,7 +104,7 @@ function init() {
 
     document.getElementById('logout-btn').addEventListener('click', () => {
         AuthService.logout();
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
     });
 }
 

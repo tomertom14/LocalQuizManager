@@ -1,4 +1,4 @@
-import { AuthService } from './services/AuthService.js';
+import { AuthService } from '../services/AuthService.js';
 
 const form = document.getElementById('login-form');
 const messageEl = document.getElementById('message');

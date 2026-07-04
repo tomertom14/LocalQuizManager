@@ -1,8 +1,8 @@
-import { AuthService } from './services/AuthService.js';
-import { ExamService } from './services/ExamService.js';
-import { ResultService } from './services/ResultService.js';
-import { Exam } from './models/Exam.js';
-import { Question } from './models/Question.js';
+import { AuthService } from '../services/AuthService.js';
+import { ExamService } from '../services/ExamService.js';
+import { ResultService } from '../services/ResultService.js';
+import { Exam } from '../models/Exam.js';
+import { Question } from '../models/Question.js';
 
 const examService = new ExamService();
 const resultService = new ResultService();

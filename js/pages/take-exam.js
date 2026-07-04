@@ -1,7 +1,7 @@
-import { AuthService } from './services/AuthService.js';
-import { ExamService } from './services/ExamService.js';
-import { ResultService } from './services/ResultService.js';
-import { ExamResult } from './models/ExamResult.js';
+import { AuthService } from '../services/AuthService.js';
+import { ExamService } from '../services/ExamService.js';
+import { ResultService } from '../services/ResultService.js';
+import { ExamResult } from '../models/ExamResult.js';
 
 const examService = new ExamService();
 const resultService = new ResultService();
@@ -49,6 +49,7 @@ function getExamIdFromUrl() {
     return params.get('id');
 }
 
+// Fisher-Yates shuffle so each attempt shows questions/options in a random order.
 function shuffleArray(items) {
     const shuffled = [...items];
 
@@ -64,6 +65,7 @@ function shuffleQuestions(questions) {
     return shuffleArray(questions);
 }
 
+// Keep each option paired with its original index so grading stays correct after shuffle.
 function shuffleAnswers(answers) {
     const entries = answers.map((text, originalIndex) => ({ text, originalIndex }));
     return shuffleArray(entries);
@@ -91,6 +93,7 @@ function renderQuestion(question, questionIndex) {
         const radio = document.createElement('input');
         radio.type = 'radio';
         radio.name = `question-${questionIndex}`;
+        // Store the original answer index (not the shuffled display position).
         radio.value = String(originalIndex);
 
         const answerText = document.createElement('span');
@@ -131,6 +134,7 @@ function getSelectedOriginalIndex(questionIndex) {
     return Number(selectedAnswer.value);
 }
 
+// Map selected answers back to the original question order for storage.
 function collectUserAnswers(exam, originalExam) {
     return originalExam.questions.map((question) => {
         const shuffledIndex = exam.questions.findIndex((q) => q.id === question.id);

@@ -13,6 +13,7 @@ export class ExamService {
       return [];
     }
 
+    // Rehydrate plain JSON from localStorage into Exam/Question class instances.
     const plainExams = JSON.parse(data);
 
     return plainExams.map((examData) => {
@@ -25,6 +26,7 @@ export class ExamService {
         examData.teacherId ?? '',
       );
 
+      // Restore persisted identity fields (constructor generates new ones by default).
       exam.id = examData.id;
       exam.createdAt = examData.createdAt;
 

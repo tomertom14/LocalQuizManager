@@ -1,4 +1,4 @@
-import { AuthService } from './services/AuthService.js';
+import { AuthService } from '../services/AuthService.js';
 
 const form = document.getElementById('register-form');
 const messageEl = document.getElementById('message');

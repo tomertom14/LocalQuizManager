@@ -36,6 +36,7 @@ export class AuthService {
     }
 
     static login(idNumber, password) {
+        // Persist the active user session in localStorage for role-based routing.
         const users = this.getUsers();
         const user = users.find(u => u.idNumber === idNumber && u.password === password);
 
@@ -43,16 +44,16 @@ export class AuthService {
             return null;
         }
 
-        sessionStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(user));
+        localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(user));
         return user;
     }
 
     static getCurrentUser() {
-        const data = sessionStorage.getItem(this.CURRENT_USER_KEY);
+        const data = localStorage.getItem(this.CURRENT_USER_KEY);
         return data ? JSON.parse(data) : null;
     }
 
     static logout() {
-        sessionStorage.removeItem(this.CURRENT_USER_KEY);
+        localStorage.removeItem(this.CURRENT_USER_KEY);
     }
 }
