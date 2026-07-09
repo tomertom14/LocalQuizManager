@@ -4,7 +4,11 @@ A fully client-side web application for creating, managing, and taking multiple-
 
 **Tech stack:** Vanilla JavaScript (ES Modules), strict Object-Oriented Programming with ES6 classes, HTML5, and CSS3.
 
+## Author
+- Tomer Elimeleh (208895870)
+
 ## Quick links
+- **GitHub Repository:** [GitHub](https://github.com/tomertom14/LocalQuizManager)
 - **Live demo:** [GitHub Pages](https://tomertom14.github.io/LocalQuizManager/)
 
 ## Features
@@ -50,8 +54,25 @@ Web_Dev_Project/
 │   └── style.css           # Global styles and theme
 └── js/
     ├── models/             # Domain entity classes
+    │   ├── User.js
+    │   ├── Teacher.js
+    │   ├── Student.js
+    │   ├── Exam.js
+    │   ├── Question.js
+    │   └── ExamResult.js
     ├── services/           # Business logic & localStorage access
+    │   ├── AuthService.js
+    │   ├── ExamService.js
+    │   └── ResultService.js
     ├── pages/              # Page controllers (one per HTML page)
+    │   ├── login.js
+    │   ├── register.js
+    │   ├── teacher-dashboard.js
+    │   ├── exam-details.js
+    │   ├── student-dashboard.js
+    │   ├── search-exam.js
+    │   ├── take-exam.js
+    │   └── view-result.js
     └── theme.js            # Dark / light mode toggle
 ```
 
@@ -83,7 +104,7 @@ Teacher flow
 pages/teacher-dashboard.html
 ├── Create New Exam ─────────────> pages/exam-details.html
 ├── Edit exam card ──────────────> pages/exam-details.html?id={examId}
-├── Delete exam card ────────────> ExamService.deleteExam(examId)
+├── Delete exam card ────────────> ExamService.deleteExam(examId, currentTeacherId)
 └── Logout ──────────────────────> AuthService.logout() ─> index.html
 
 pages/exam-details.html
@@ -218,6 +239,19 @@ The `exam_results` key stores submitted student attempts. `userAnswers` is an ar
 ]
 ```
 
+### `theme`
+
+The `theme` key stores the user's visual interface preference independently from the core exam data. It is a simple string value managed by `theme.js`.
+
+```json
+"dark"
+```
+
+Valid values:
+
+- `"light"`
+- `"dark"`
+
 ## OOP Class Diagram (UML)
 
 The project uses ES Modules and ES6 classes for the core domain objects. Services operate on these model objects and page controllers connect them to the DOM.
@@ -287,20 +321,22 @@ classDiagram
 
 ### Flow 1: Exam Submission and Grading
 
-This flow starts when a student is on `pages/take-exam.html` and clicks the `Submit Exam` button.
+This flow starts when a student is on `pages/take-exam.html` and either clicks the `Submit Exam` button or reaches the exam time limit.
 
 1. `take-exam.js` runs `init()` when the module loads. It calls `AuthService.getCurrentUser()` and requires a logged-in student. If the user is missing or is not a student, the page redirects to `pages/login.html`.
 2. `init()` reads the exam ID from the URL with `getExamIdFromUrl()`, then calls `examService.getExamById(examId)`. `ExamService` reads the `exams` key from `localStorage`, parses the stored JSON, and rehydrates each stored exam into an `Exam` instance with nested `Question` instances.
-3. Before rendering the exam, `take-exam.js` checks that the exam exists, has questions, and that the student has not exceeded `currentExam.maxAttempts`. Attempts are counted by calling `resultService.getResultsByStudent(currentUser.id)` and filtering those results by `examId`.
-4. The exam questions are shuffled with `shuffleQuestions()`. Each question's answer options are also shuffled with `shuffleAnswers()`, but each option keeps its original answer index in the radio input value. This preserves correct grading even when the display order changes.
-5. When the student clicks `Submit Exam`, the `handleSubmitExam()` event handler runs. It first validates that every question has a selected radio input by calling `getSelectedOriginalIndex(questionIndex)` for each rendered question.
-6. If any question is unanswered, `showExamError()` displays a validation message and no result is saved.
-7. If all questions are answered, `handleSubmitExam()` calls `calculateScore(currentExam)`. That function loops through `currentExam.questions`, reads each selected original answer index, and calls `question.isCorrect(userAnswerIndex)`. The `Question` model compares the submitted index against `correctAnswerIndex`.
-8. `handleSubmitExam()` then reloads the original persisted exam by calling `examService.getExamById(currentExam.id)`. This is needed because the rendered exam was shuffled. `collectUserAnswers(currentExam, originalExam)` maps the selected answer indexes back into the original question order for stable storage and review.
-9. A new `ExamResult` is created with `studentId`, `examId`, `examTitle`, `score`, `totalQuestions`, `completedAt`, and `userAnswers`.
-10. `resultService.saveResult(examResult)` reads the current `exam_results` array from `localStorage`, appends the new result, and writes the updated array back using `localStorage.setItem("exam_results", JSON.stringify(results))`.
-11. The student immediately sees the final score and percentage. `showAnswerReview(currentExam)` disables all radio buttons and visually marks correct and incorrect answers.
-12. Teacher result visibility happens through `pages/exam-details.html?id={examId}`. When a teacher edits an existing exam, `exam-details.js` calls `renderStudentResults(exam.id)`. That function calls `resultService.getResultsByExam(examId)`, rehydrates each stored result into an `ExamResult`, looks up each student with `AuthService.getUsers()`, and populates the teacher's results table with student name, score, percentage, and completion date.
+3. If the exam has an access code, `verifyExamAccessCode(currentExam)` checks `sessionStorage.getItem("verified_exam_{examId}")`. If the flag is not `"true"`, the student must enter the matching access code before the exam can render. Failed or canceled verification redirects back to `pages/search-exam.html`.
+4. Before rendering the exam, `take-exam.js` checks that the exam exists, has questions, and that the student has not exceeded `currentExam.maxAttempts`. Attempts are counted by calling `resultService.getResultsByStudent(currentUser.id)` and filtering those results by `examId`.
+5. The exam questions are shuffled with `shuffleQuestions()`. Each question's answer options are also shuffled with `shuffleAnswers()`, but each option keeps its original answer index in the radio input value. This preserves correct grading even when the display order changes.
+6. `startExamTimer(currentExam)` uses `durationMinutes` to render a live `MM:SS` countdown. When the countdown reaches `00:00`, it calls `handleSubmitExam(true)` to force-submit the current answers and save unanswered questions as `null` values.
+7. When the student clicks `Submit Exam`, the `handleSubmitExam()` event handler runs in manual mode. It first validates that every question has a selected radio input by calling `getSelectedOriginalIndex(questionIndex)` for each rendered question.
+8. If any question is unanswered during manual submission, `showExamError()` displays a validation message and no result is saved.
+9. If all questions are answered manually, or if the timer submits automatically, `handleSubmitExam()` calls `calculateScore(currentExam)`. That function loops through `currentExam.questions`, reads each selected original answer index, and calls `question.isCorrect(userAnswerIndex)`. The `Question` model compares the submitted index against `correctAnswerIndex`.
+10. `handleSubmitExam()` then reloads the original persisted exam by calling `examService.getExamById(currentExam.id)`. This is needed because the rendered exam was shuffled. `collectUserAnswers(currentExam, originalExam)` maps the selected answer indexes back into the original question order for stable storage and review.
+11. A new `ExamResult` is created with `studentId`, `examId`, `examTitle`, `score`, `totalQuestions`, `completedAt`, and `userAnswers`.
+12. `resultService.saveResult(examResult)` reads the current `exam_results` array from `localStorage`, appends the new result, and writes the updated array back using `localStorage.setItem("exam_results", JSON.stringify(results))`.
+13. The student immediately sees the final score and percentage. `showAnswerReview(currentExam)` disables all radio buttons and visually marks correct and incorrect answers.
+14. Teacher result visibility happens through `pages/exam-details.html?id={examId}`. When a teacher edits an existing exam, `exam-details.js` calls `renderStudentResults(exam.id)`. That function calls `resultService.getResultsByExam(examId)`, rehydrates each stored result into an `ExamResult`, looks up each student with `AuthService.getUsers()`, and populates the teacher's results table with student name, score, percentage, and completion date.
 
 ### Flow 2: Authentication and Route Protection
 
@@ -318,5 +354,14 @@ Authentication is managed by `AuthService` and the active session is stored in `
    - `take-exam.js` requires `currentUser.role === "student"`.
    - `view-result.js` requires `currentUser.role === "student"`.
 6. If `AuthService.getCurrentUser()` returns `null`, or if the role does not match the page scope, the controller redirects immediately to `pages/login.html` and stops execution with `return`.
-7. Additional object-level authorization is enforced where needed. `exam-details.js` only allows a teacher to edit an exam when `exam.teacherId === currentUser.id`. `view-result.js` only allows a student to review a result when `result.studentId === currentUser.id`.
+7. Additional object-level authorization is enforced where needed. `exam-details.js` only allows a teacher to edit an exam when `exam.teacherId === currentUser.id`. `ExamService.deleteExam(examId, currentTeacherId)` only deletes an exam after verifying that `exam.teacherId === currentTeacherId`. `view-result.js` only allows a student to review a result when `result.studentId === currentUser.id`.
 8. The shared authenticated navbar includes a global `Logout` button. Each secured controller attaches a click listener to `#logout-btn`. The handler calls `AuthService.logout()`, which removes `currentUser` from `localStorage`, then redirects the browser to `index.html`. After logout, secured pages no longer pass their route guard.
+
+## Bonus Features Implemented
+
+Out of the optional extension requirements, the following features have been fully implemented:
+- **Exam Countdown Timer:** A live MM:SS visual countdown that triggers auto-submission upon reaching 00:00.
+- **Question & Answer Shuffling:** Uses the Fisher-Yates algorithm to randomize questions and choices while safely preserving evaluation indices.
+- **Light/Dark Mode Toggle:** A fully customized interface theme switch persisted via `localStorage`.
+- **Immediate Visual Review:** Post-submission color-coding (green/red) and absolute grade feedback.
+- **Advanced Performance Metrics:** Tracks historical exam statistics and renders a running average score for students.

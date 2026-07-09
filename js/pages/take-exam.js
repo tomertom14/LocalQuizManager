@@ -8,6 +8,8 @@ const resultService = new ResultService();
 
 let currentUser = null;
 let currentExam = null;
+let timerIntervalId = null;
+let isSubmitted = false;
 
 function redirectToLogin() {
     window.location.href = 'login.html';
@@ -57,6 +59,83 @@ function showAttemptsBlockedMessage() {
 function getExamIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return params.get('id');
+}
+
+function getVerifiedExamKey(examId) {
+    return `verified_exam_${examId}`;
+}
+
+function verifyExamAccessCode(exam) {
+    if (!exam.accessCode) {
+        return true;
+    }
+
+    const verifiedKey = getVerifiedExamKey(exam.id);
+    const alreadyVerified = sessionStorage.getItem(verifiedKey) === 'true';
+
+    if (alreadyVerified) {
+        return true;
+    }
+
+    const enteredCode = prompt('Enter the exam access code to continue:');
+
+    if (enteredCode?.trim() === exam.accessCode) {
+        sessionStorage.setItem(verifiedKey, 'true');
+        return true;
+    }
+
+    alert('Invalid or missing access code. Returning to exam search.');
+    redirectToSearch();
+    return false;
+}
+
+function formatRemainingTime(totalSeconds) {
+    const safeSeconds = Math.max(0, totalSeconds);
+    const minutes = Math.floor(safeSeconds / 60);
+    const seconds = safeSeconds % 60;
+
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+function renderTimer(remainingSeconds) {
+    const timerEl = document.getElementById('exam-timer');
+    const timerValueEl = document.getElementById('timer-value');
+
+    timerEl.hidden = false;
+    timerValueEl.textContent = formatRemainingTime(remainingSeconds);
+}
+
+function clearExamTimer() {
+    if (!timerIntervalId) {
+        return;
+    }
+
+    clearInterval(timerIntervalId);
+    timerIntervalId = null;
+}
+
+function startExamTimer(exam) {
+    const durationSeconds = Number(exam.durationMinutes) * 60;
+
+    if (!Number.isFinite(durationSeconds) || durationSeconds <= 0) {
+        return;
+    }
+
+    const startedAt = Date.now();
+    renderTimer(durationSeconds);
+
+    timerIntervalId = setInterval(() => {
+        const elapsedSeconds = Math.floor((Date.now() - startedAt) / 1000);
+        const remainingSeconds = durationSeconds - elapsedSeconds;
+
+        renderTimer(remainingSeconds);
+
+        if (remainingSeconds <= 0) {
+            clearExamTimer();
+            showExamError('Time is up. Your exam was submitted automatically.');
+            handleSubmitExam(true);
+        }
+    }, 1000);
 }
 
 // Fisher-Yates shuffle so each attempt shows questions/options in a random order.
@@ -196,16 +275,22 @@ function showAnswerReview(exam) {
     });
 }
 
-function handleSubmitExam() {
+function handleSubmitExam(forceSubmit = false) {
+    if (isSubmitted) {
+        return;
+    }
+
     const unansweredCount = currentExam.questions.filter((_, questionIndex) => {
         return getSelectedOriginalIndex(questionIndex) === null;
     }).length;
 
-    if (unansweredCount > 0) {
+    if (unansweredCount > 0 && !forceSubmit) {
         showExamError('Please answer all questions before submitting.');
         return;
     }
 
+    isSubmitted = true;
+    clearExamTimer();
     hideExamError();
 
     const score = calculateScore(currentExam);
@@ -260,6 +345,10 @@ function init() {
         return;
     }
 
+    if (!verifyExamAccessCode(currentExam)) {
+        return;
+    }
+
     if (currentExam.questions.length === 0) {
         showErrorAndRedirect('This exam has no questions. Redirecting to search…');
         return;
@@ -278,10 +367,13 @@ function init() {
     currentExam.questions = shuffleQuestions(currentExam.questions);
 
     renderExam(currentExam);
+    startExamTimer(currentExam);
 
-    document.getElementById('submit-exam-btn').addEventListener('click', handleSubmitExam);
+    document.getElementById('submit-exam-btn').addEventListener('click', () => handleSubmitExam());
+    window.addEventListener('beforeunload', clearExamTimer);
 
     document.getElementById('logout-btn').addEventListener('click', () => {
+        clearExamTimer();
         AuthService.logout();
         window.location.href = '../index.html';
     });

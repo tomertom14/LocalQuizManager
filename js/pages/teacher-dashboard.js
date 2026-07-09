@@ -15,7 +15,12 @@ function handleDeleteExam(examId) {
         return;
     }
 
-    examService.deleteExam(examId);
+    try {
+        examService.deleteExam(examId, currentUser.id);
+    } catch (error) {
+        alert(error.message);
+        return;
+    }
 
     const exams = examService.getExamsByTeacher(currentUser.id);
     renderExams(exams);

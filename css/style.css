@@ -788,6 +788,25 @@ body:has(.take-exam-page) {
     margin-top: 0;
 }
 
+.exam-timer {
+    position: sticky;
+    top: 12px;
+    z-index: 10;
+    max-width: 260px;
+    margin: 0 auto 20px;
+    padding: 10px 16px;
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    color: var(--text);
+    font-weight: 700;
+    text-align: center;
+}
+
+.exam-timer span {
+    color: var(--accent);
+}
+
 .results-panel {
     background: var(--card-bg);
     border-radius: var(--radius);

@@ -60,8 +60,17 @@ export class ExamService {
     localStorage.setItem(this.storageKey, JSON.stringify(exams));
   }
 
-  deleteExam(examId) {
+  deleteExam(examId, currentTeacherId) {
     const exams = this.getAllExams();
+    const exam = exams.find((currentExam) => currentExam.id === examId);
+
+    if (!exam) {
+      throw new Error("Exam not found.");
+    }
+
+    if (exam.teacherId !== currentTeacherId) {
+      throw new Error("You do not have permission to delete this exam.");
+    }
 
     const filteredExams = exams.filter((exam) => exam.id !== examId);
 
