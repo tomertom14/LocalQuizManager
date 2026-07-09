@@ -4,6 +4,9 @@ A fully client-side web application for creating, managing, and taking multiple-
 
 **Tech stack:** Vanilla JavaScript (ES Modules), strict Object-Oriented Programming with ES6 classes, HTML5, and CSS3.
 
+## Quick links
+- **Live demo:** [GitHub Pages](https://tomertom14.github.io/LocalQuizManager/)
+
 ## Features
 
 ### Teacher Capabilities
@@ -60,61 +63,6 @@ Web_Dev_Project/
 
 - **`js/pages/`** — Page-specific controllers (such as `teacher-dashboard.js`, `take-exam.js`, `view-result.js`) that wire together services, models, and the DOM for each HTML page.
 
-## OOP Diagram
-
-```mermaid
-classDiagram
-class User {
-+String id
-+String name
-+String idNumber
-+String role
-+String password
-+login()
-+register()
-}
-class Teacher {
-+List~Exam~ createdExams
-+createExam()
-+viewStudentResults()
-}
-class Student {
-+List~ExamResult~ examHistory
-+takeExam(Exam)
-+getAverageScore()
-}
-User <|-- Teacher
-User <|-- Student
-class Exam {
-+String id
-+String title
-+String description
-+String category
-+String accessCode
-+Number durationMinutes
-+String teacherId
-+List~Question~ questions
-+addQuestion(Question)
-}
-class Question {
-+String id
-+String text
-+List~String~ answers
-+Number correctAnswerIndex
-+isCorrect(Number)
-}
-class ExamResult {
-+String id
-+String studentId
-+String examId
-+Number score
-+Date completedAt
-}
-Exam "1" *-- "many" Question : contains
-Teacher "1" --> "many" Exam : creates
-Student "1" --> "many" ExamResult : generates
-Exam "1" --> "many" ExamResult : has
-```
 
 ## Site Map & Navigation Flow
 
