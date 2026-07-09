@@ -7,21 +7,24 @@
     <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
-    <div class="theme-toggle-wrapper">
-        <button type="button" id="theme-toggle-btn" class="btn btn-theme-toggle">Toggle Dark Mode</button>
-    </div>
+    <nav class="app-nav">
+        <a class="app-nav-brand" href="../index.html">📝 Exam System</a>
+        <div class="app-nav-actions">
+            <span class="role-badge student">Student</span>
+            <button type="button" id="theme-toggle-btn" class="btn btn-theme-toggle">Toggle Dark Mode</button>
+            <button type="button" id="logout-btn" class="btn btn-secondary">Logout</button>
+        </div>
+    </nav>
 
     <div class="dashboard-page">
         <header class="dashboard-header">
             <div class="dashboard-header-top">
-                <span class="role-badge student">Student</span>
                 <h1>Student Dashboard</h1>
                 <p id="welcome-message" class="subtitle"></p>
             </div>
 
             <div class="dashboard-actions">
                 <a href="search-exam.html" class="btn btn-primary">Search for Exam</a>
-                <button type="button" id="logout-btn" class="btn btn-secondary">Logout</button>
             </div>
         </header>
 
@@ -54,7 +57,6 @@
 
     <script type="module">
         import { initTheme, toggleTheme } from '../js/theme.js';
-
         initTheme();
         document.getElementById('theme-toggle-btn').addEventListener('click', toggleTheme);
     </script>

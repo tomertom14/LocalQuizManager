@@ -990,3 +990,64 @@ body.dark-mode .back-link a,
 body.dark-mode .github-link a {
     color: var(--accent);
 }
+
+/* ── App navigation bar (shared across authenticated pages) ── */
+.app-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 56px;
+    background: var(--card-bg);
+    border-bottom: 1.5px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.app-nav-brand {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+    letter-spacing: -0.2px;
+}
+
+.app-nav-brand:hover {
+    color: var(--accent);
+}
+
+.app-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.app-nav .role-badge {
+    margin-bottom: 0;
+}
+
+.app-nav .btn-theme-toggle {
+    position: static;
+    box-shadow: none;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    width: auto;
+    margin-top: 0;
+}
+
+.app-nav .btn-secondary {
+    width: auto;
+    margin-top: 0;
+    padding: 6px 16px;
+    font-size: 0.85rem;
+}
+
+/* Push all page content below the fixed navbar */
+body:has(.app-nav) {
+    justify-content: flex-start;
+    padding-top: 76px;
+}

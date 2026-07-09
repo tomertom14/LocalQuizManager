@@ -88,6 +88,11 @@ function init() {
 
         handleSearch(query);
     });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        AuthService.logout();
+        window.location.href = '../index.html';
+    });
 }
 
 init();

@@ -413,6 +413,11 @@ function init() {
     addQuestionBtn.addEventListener('click', handleAddQuestion);
     cancelEditBtn.addEventListener('click', handleCancelEdit);
     document.getElementById('save-exam-btn').addEventListener('click', handleSaveExam);
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        AuthService.logout();
+        window.location.href = '../index.html';
+    });
 }
 
 init();

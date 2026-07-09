@@ -7,13 +7,17 @@
     <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
-    <div class="theme-toggle-wrapper">
-        <button type="button" id="theme-toggle-btn" class="btn btn-theme-toggle">Toggle Dark Mode</button>
-    </div>
+    <nav class="app-nav">
+        <a class="app-nav-brand" href="../index.html">📝 Exam System</a>
+        <div class="app-nav-actions">
+            <span class="role-badge teacher">Teacher</span>
+            <button type="button" id="theme-toggle-btn" class="btn btn-theme-toggle">Toggle Dark Mode</button>
+            <button type="button" id="logout-btn" class="btn btn-secondary">Logout</button>
+        </div>
+    </nav>
 
     <div class="exam-details-page">
         <header class="exam-details-header">
-            <span class="role-badge teacher">Teacher</span>
             <h1 id="page-title">Create New Exam</h1>
             <p id="page-subtitle" class="subtitle">Fill in the exam details and add at least one question.</p>
         </header>
@@ -138,7 +142,6 @@
 
     <script type="module">
         import { initTheme, toggleTheme } from '../js/theme.js';
-
         initTheme();
         document.getElementById('theme-toggle-btn').addEventListener('click', toggleTheme);
     </script>

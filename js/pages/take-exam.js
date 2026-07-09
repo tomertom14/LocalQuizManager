@@ -280,6 +280,11 @@ function init() {
     renderExam(currentExam);
 
     document.getElementById('submit-exam-btn').addEventListener('click', handleSubmitExam);
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        AuthService.logout();
+        window.location.href = '../index.html';
+    });
 }
 
 init();
